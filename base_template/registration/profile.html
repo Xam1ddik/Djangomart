@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Профиль
+{% endblock %}
+
+{% block main %}
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="mb-4">Профиль</h1>
+            {% if profile_user.avatar %}
+            <img class="rounded-circle ava" style="width: 250px; height: 250px;" loading="lazy" src="{{ profile_user.avatar.url }}"/>
+            {% endif %}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Имя пользователя:</strong> {{ profile_user.username }}</li>
+                <li class="list-group-item"><strong>Email:</strong> {{ profile_user.email }}</li>
+                <li class="list-group-item"><strong>Телефон:</strong> {{ profile_user.phone }}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

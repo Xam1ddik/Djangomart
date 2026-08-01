@@ -1,0 +1,128 @@
+{% load static %}
+<nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary ">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'index_url' %}">
+            <!-- <img alt="" src="{% static 'LOGO.png' %}" width="75"> -->
+            <span class="logo">Django Shop</span>
+        </a>
+        <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                class="navbar-toggler" data-bs-target="#navbarSupportedContent"
+                data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <form class="d-flex" role="search" method="get" action="{% url 'search_url' %}">
+                        <input name="q" class="form-control me-2" type="search" placeholder="Поиск"
+                               aria-label="Поиск"/>
+                        <button class="btn btn-outline-success" type="submit">Поиск</button>
+                    </form>
+                </li>
+            </ul>
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                {% if categories %}
+                <li class="nav-item dropdown">
+                    <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                       data-bs-toggle="dropdown" id="navbarDropdown" role="button">
+                        Категории
+                    </a>
+                    <ul aria-labelledby="navbarDropdown" class="dropdown-menu">
+                        {% for category in categories %}
+                        <li>
+                            <a class="dropdown-item"
+                               href="{% url 'category_detail' category.slug %}">{{ category.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item dropdown">
+                    <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                       data-bs-toggle="dropdown" id="navbarDropdown" role="button">
+                       Категории
+                    </a>
+                    <ul aria-labelledby="navbarDropdown" class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="#">Нет категорий</a>
+                        </li>
+                    </ul>
+                </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'wishlist_url' %}" style="padding-bottom: 0px; padding-top: 10px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#EA3323"><path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Z"/></svg>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    {% if user.avatar %}
+                    <a class="nav-link hidden-arrow"
+                       data-bs-toggle="dropdown"
+                       href="#"
+                       role="button"
+                    >
+                        <img class="rounded-circle ava"
+                             height="25"
+                             loading="lazy"
+                             src="{{ user.avatar.url }}"
+                        />
+                    </a>
+                    {% else %}
+                    <a class="nav-link hidden-arrow"
+                       data-bs-toggle="dropdown"
+                       href="#"
+                       role="button">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#434343"><path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm146.5-204.5Q340-521 340-580t40.5-99.5Q421-720 480-720t99.5 40.5Q620-639 620-580t-40.5 99.5Q539-440 480-440t-99.5-40.5ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
+                    </a>
+                    {% endif %}
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'profile_url' %}">
+                                Профиль
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="{% url 'cart_url' %}">
+                                Корзина
+                            </a>
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <form action="{% url 'logout_url' %}"
+                                  method="post">
+                                {% csrf_token %}
+                                <button class="dropdown-item"
+                                        type="submit">
+                                    Выход
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+
+                {% else %}
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% url 'login_url' %}">
+                        Войти
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% url 'register_url' %}">
+                        Регистрация
+                    </a>
+                </li>
+                {% endif %}
+        </div>
+    </div>
+</nav>

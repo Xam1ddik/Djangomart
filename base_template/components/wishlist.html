@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Избранное
+{% endblock %}
+
+{% block main %}
+<div class="container py-4">
+    <h1 class="mb-4">Избранное</h1>
+
+    {% if wishlist_items %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for item in wishlist_items %}
+        {% include 'components/_product_card.html' with product=item.product is_wishlisted=True %}
+        {% endfor %}
+    </div>
+    <div class="d-flex justify-content-end mt-4">
+        <form action="{% url 'wishlist_clean_url' %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-outline-dark" type="submit">Очистить избранное</button>
+        </form>
+
+    </div>
+    {% else %}
+    <div class="alert alert-info">Список избранного пуст.</div>
+    {% endif %}
+</div>
+{% endblock %}

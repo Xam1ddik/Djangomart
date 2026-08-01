@@ -1,0 +1,45 @@
+<div class="col">
+    <div class="card h-100 product-card">
+        {% if product.image %}
+        <a class="link-no-underline" href="{% url 'product_detail' product.slug %}">
+            <img alt="{{ product.name }}" class="card-img-top product-image" src="{{ product.image.url }}">
+        </a>
+        {% else %}
+        <a class="link-no-underline" href="{% url 'product_detail' product.slug %}">
+            <div class="card-img-top product-image no-image">Нет изображения</div>
+        </a>
+        {% endif %}
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+                <h5 class="card-title mb-2">{{ product.name }}</h5>
+                {% if product.is_new %}
+                <span class="badge bg-success">New</span>
+                {% endif %}
+            </div>
+            <p class="card-text text-muted mb-2">{{ product.category.name }}</p>
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="fw-bold text-success">{{ product.price }} sum</span>
+                {% if product.old_price and product.old_price > product.price %}
+                <span class="text-decoration-line-through text-muted">{{ product.old_price }} sum</span>
+                <span class="badge bg-danger">-{{ product.discount_percent }}%</span>
+                {% endif %}
+            </div>
+            <div class="d-flex justify-content-end mt-2">
+                <form action="{% url 'cart_add_url' product.id %}" class="me-2" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-primary " type="submit">В корзину</button>
+                </form>
+                <form action="{% url 'wishlist_toggle_url' product.id %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn {% if product.id in wishlists.product_id %} btn-danger {% else %} btn-outline-success {% endif %}"
+                            type="submit">
+                        <svg fill="currentColor" height="20px" viewBox="0 -960 960 960" width="20px"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

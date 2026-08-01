@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ product.name }}
+{% endblock %}
+
+{% block main %}
+<div class="container py-4">
+    <div class="row g-4">
+        <div class="col-lg-5">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="img-fluid rounded shadow-sm w-100" alt="{{ product.name }}">
+            {% else %}
+            <div class="border rounded p-5 text-center text-muted">Нет изображения</div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-7">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                    <h1>{{ product.name }}</h1>
+                    <p class="text-muted mb-3">{{ product.category.name }}</p>
+                </div>
+                {% if product.is_new %}
+                <span class="badge bg-success">New</span>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <span class="fw-bold fs-4 text-success">{{ product.price }} sum</span>
+                {% if product.old_price and product.old_price > product.price %}
+                <span class="text-decoration-line-through text-muted ms-2">{{ product.old_price }} sum</span>
+                <span class="badge bg-danger ms-2">-{{ product.discount_percent }}%</span>
+                {% endif %}
+            </div>
+
+            <p>{{ product.description|default:'Описание товара отсутствует.' }}</p>
+
+            <div class="d-flex gap-2 flex-wrap mb-4">
+                <form action="{% url 'cart_add_url' product.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">В корзину</button>
+                </form>
+
+                <form action="{% url 'wishlist_toggle_url' product.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn {% if is_wishlisted %}btn-danger{% else %}btn-outline-success{% endif %}">
+                        {% if is_wishlisted %}Удалить из избранного{% else %}Добавить в избранное{% endif %}
+                    </button>
+                </form>
+            </div>
+
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">В наличии: {{ product.stock }}</li>
+                <li class="list-group-item">Единица измерения: {{ product.unit }}</li>
+                <li class="list-group-item">Рейтинг: {{ product.avg_rating }} / 5</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h3>Отзывы</h3>
+        {% if reviews %}
+        <div class="list-group">
+            {% for review in reviews %}
+            <div class="list-group-item">
+                <div class="d-flex justify-content-between">
+                    <strong>{{ review.user.username }}</strong>
+                    <span>{{ review.rating }} ⭐</span>
+                </div>
+                <div class="text-muted small">{{ review.created_at }}</div>
+                <div class="mt-2">{{ review.comment }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">Пока нет отзывов. Будьте первым.</div>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'review_add_url' product.slug %}" class="mt-4">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-4">
+                    {{ form.rating.label_tag }}
+                    {{ form.rating }}
+                </div>
+                <div class="col-12">
+                    {{ form.comment.label_tag }}
+                    {{ form.comment }}
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">Оставить отзыв</button>
+                </div>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert alert-secondary mt-4">Чтобы оставить отзыв, войдите в аккаунт.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

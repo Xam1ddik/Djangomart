@@ -1,0 +1,22 @@
+# Виртуальное окружение
+venv/
+env/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Django
+*.log
+db.sqlite3
+media/
+staticfiles/*
+!staticfiles/css/
+
+# IDE
+.vscode/
+.idea/
+
+# ОС
+.DS_Store
